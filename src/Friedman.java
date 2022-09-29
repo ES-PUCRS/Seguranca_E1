@@ -2,6 +2,41 @@ import java.util.HashMap;
 
 public class Friedman {
 
+	private static final int MIN_SUBSTRINGS = 1;
+	private static final int MAX_SUBSTRINGS = 10;
+	private static final ExecutorService pool = Executors.newCachedThreadPool();
+
+	public static void decrypt(String cipher) {
+		for (int i = MIN_SUBSTRINGS; i < MAX_SUBSTRINGS; i++) {
+
+		}
+	}
+
+	private static HashMap<Character, Integer> cipherSubstringGroups(String cipher, int length) {
+		if(cipher.length() <= 0) return;
+		HashMap<Character, Integer> table = characterHashMapConstructor(new HashMap<Character, Integer>());
+		char[] array = cipher.toUpperCase().toCharArray();
+		int size = cipher.length();
+
+		pool.execute(threadfySubstrings);
+	
+		for (char letter : array)
+			if(letter != 32)
+				table.put(letter, table.get(letter) + 1);
+
+		return table;
+	}
+
+
+    private static Runnable threadfySubstrings = new Runnable() {
+        public void run() {
+            try{
+            	if()
+            		pool.execute(threadfySubstrings);
+            } catch (Exception e){}
+        }
+    };
+
 	public static double test(HashMap<Character, Integer> map) {
 		int ni = 0;
 		int nii = 0;
@@ -32,4 +67,15 @@ public class Friedman {
 		return divident/divisor;
 	}
 
+	private static HashMap<Character, Integer> characterHashMapConstructor(HashMap<Character, Integer> table) {
+		for(int i = 0; i < 26; i++) {
+			table.put((char) (65 + i), 0);
+		}
+		return table;
+	}
+
+
+	private static void threadfy() {
+
+	}
 }

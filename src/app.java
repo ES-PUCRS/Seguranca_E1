@@ -20,18 +20,19 @@ public class app {
 		else fileArray = args[0].split(",");
 
 		// Read file
-		for(String file : fileArray){
+		for(String file : fileArray) {
 			letterTable = buildLetterTable();
 			percentageTable = buildPercentageTable();
 			read(file);
 			
 
 			double friedmanTest = Friedman.test(letterTable);
+			double friedmanTest = Friedman.decrypt(cipher);
 			System.out.println("Running for file: " + file);
 			FileManager.record(
 				file,
-				embedPercentage(letterTable, percentageTable, friedmanTest) +"\n\n"+
-				Vigenere.decode(cipher, "AVELINO")
+				embedPercentage(letterTable, percentageTable, friedmanTest) + "\n\n"
+				// + Vigenere.decode(cipher, "AVELINO")
 			);
 		}
 	}
