@@ -4,28 +4,35 @@ import java.util.HashMap;
 
 public class app {
 
+	public static final char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+	
+
 	private static HashMap<Character, Integer> letterTable;
 	private static HashMap<Character, Double> percentageTable;
+	private static String cipher = "";
 	private static String SPACING = "\t\t";
 
 	public static void main(String args[]) {
 		String[] fileArray = null;
 
 		if(args.length <= 0)
-			fileArray = new String[] {"T1"};
-		else if (args[0].equals("all"))
-			fileArray = new String[] {"T1", "T2", "T3", "T4", "T5", "T6", "T7", "TextoClaro"};
-		else
-			fileArray = args[0].split("\\s");
+			 fileArray = new String[] {"ciphers"};
+		else fileArray = args[0].split(",");
 
 		// Read file
 		for(String file : fileArray){
 			letterTable = buildLetterTable();
 			percentageTable = buildPercentageTable();
 			read(file);
+			
 
+			double friedmanTest = Friedman.test(letterTable);
 			System.out.println("Running for file: " + file);
-			FileManager.record(file, embedPercentage(letterTable, percentageTable));
+			FileManager.record(
+				file,
+				embedPercentage(letterTable, percentageTable, friedmanTest) +"\n\n"+
+				Vigenere.decode(cipher, "AVELINO")
+			);
 		}
 	}
 
@@ -43,16 +50,32 @@ public class app {
 
 	private static void handler(String data) {
 		if(data.length() <= 0) return;
-		char[] array = data.toCharArray();
+		char[] array = data.toUpperCase().toCharArray();
 		int size = data.length();
+		cipher += data;
 
 		for (char letter : array)
-			letterTable.put(letter, letterTable.get(letter) + 1);
+			if(letter != 32)
+				letterTable.put(letter, letterTable.get(letter) + 1);
 
 		letterTable.forEach((k, v) -> {
 			percentageTable.put((char) k, (double) (v * 100) / size);
         });
 	}
+
+
+
+	private static String embedPercentage(HashMap letters, HashMap percentage, double friedmanTest) {
+		String[] format = formatMapString(letters);
+		String result = "";
+		for(String letter : format)
+			result += letter + SPACING + String.format("%,.2f",percentage.get(letter.charAt(0))) + " %\n";
+
+		return result.replaceAll("=", SPACING) + String.format("%,.6f",friedmanTest);
+	}
+
+
+
 
 
 
@@ -65,23 +88,10 @@ public class app {
 					.split(", ");
 	}
 
-	private static String embedPercentage(HashMap letters, HashMap percentage) {
-		String[] format = formatMapString(letters);
-		String result = "";
-		for(String letter : format)
-			result += letter + SPACING + String.format("%,.2f",percentage.get(letter.charAt(0))) + " %\n";
-
-		return result.replaceAll("=", SPACING);
-	}
-
-
-
-
-
 	private static HashMap<Character, Integer> buildLetterTable() {
 		HashMap<Character, Integer> table = new HashMap<Character, Integer>();
 		for(int i = 0; i < 26; i++){
-			table.put((char) (97 + i), 0);
+			table.put((char) (65 + i), 0);
 		}
 
 		return table;
@@ -90,7 +100,7 @@ public class app {
 	private static HashMap<Character, Double> buildPercentageTable() {
 		HashMap<Character, Double> table = new HashMap<Character, Double>();
 		for(int i = 0; i < 26; i++){
-			table.put((char) (97 + i), 0.0);
+			table.put((char) (65 + i), 0.0);
 		}
 
 		return table;

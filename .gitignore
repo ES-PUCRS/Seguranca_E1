@@ -1,7 +1,9 @@
 # Compiled class file
 *.class
+/src/content
 /src/result
 /bin
+.vs**
 
 # Log file
 *.log
